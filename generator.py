@@ -140,11 +140,12 @@ class MarkovGenerator(object):
         
         while True:
         
+            # TODO: with a small probability, attempt to find the next word in the topical text first
+        
             try:
                 next_word = random.choice(self.training_ngram_dict_backward[tuple(current_ngram[:-1])])
             except KeyError:
                 next_word = random.choice(self.topical_ngram_dict_backward[tuple(current_ngram[:-1])])
-            
             
             if next_word == self.SENTENCE_BEGINNER:
                 break
@@ -159,15 +160,14 @@ class MarkovGenerator(object):
 
 
 
-markov = MarkovGenerator(ngram_size=2)
+markov = MarkovGenerator(ngram_size=3)
 
 markov.load_training_text(open('data/plato-apology.txt').read())
 markov.load_topical_text(open('data/irc_text.txt').read())
 
 
 while True:
-    #print markov.generate_sentence(['Markov', 'chains', 'are'])
-    print markov.generate_sentence(['Markov', 'chains'])
+    print markov.generate_sentence(['Markov', 'chains', 'are'])
     pdb.set_trace()
     
     
