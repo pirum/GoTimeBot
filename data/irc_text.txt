@@ -95,3 +95,4 @@ yes, the cooler is useless
 but one of my coworkers has latched on to the term "multi-server environment"
 personally i think 'cluster' is far more accurate
 /rant
+Although, as I said, Markov chains are a crude way to simulate actual thought.

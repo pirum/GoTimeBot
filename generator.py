@@ -8,18 +8,24 @@ import nltk
 
 class MarkovGenerator(object):
 
+    SENTENCE_BEGINNER = 'CtK7mc2tpx'
+    SENTENCE_TERMINATOR = 'ODTphNBJSp'
+    DONT_PREPEND_SPACE = (',', '.', ';', '?', '!', ':')
+
     sentence_segmenter = nltk.data.load('tokenizers/punkt/english.pickle')
-    sentence_terminator = 'SENTENCE_TERMINATOR'
-    dont_prepend_spaces = (',', '.', ';', '?', '!', ':')
 
     def __init__(self, ngram_size=3):
     
         self.ngram_size = ngram_size
-        self.ngram_dict_forward = {}
-        self.ngram_dict_backward = {}
-    
         
-    def add_text(self, text):
+        self.training_ngram_dict_forward = {}
+        self.training_ngram_dict_backward = {}
+    
+        self.topical_ngram_dict_forward = {}
+        self.topical_ngram_dict_backward = {}
+        
+        
+    def load_training_text(self, text):
     
         for sentence in self.sentence_segmenter.tokenize(text):
         
@@ -28,26 +34,55 @@ class MarkovGenerator(object):
                 forward_key = ngram[:-1]
                 forward_value = ngram[-1]
                 
-                if forward_key in self.ngram_dict_forward.iterkeys():
-                    self.ngram_dict_forward[forward_key].append(forward_value)
+                if forward_key in self.training_ngram_dict_forward.iterkeys():
+                    self.training_ngram_dict_forward[forward_key].append(forward_value)
                 else:
-                    self.ngram_dict_forward[forward_key] = [forward_value]
+                    self.training_ngram_dict_forward[forward_key] = [forward_value]
         
-                """
                 backward_key = ngram[1:]
                 backward_value = ngram[0]
                 
-                if backward_key in self.ngram_dict_backward.iterkeys():
-                    self.ngram_dict_backward[backward_key].append(backward_value)
+                if backward_key in self.training_ngram_dict_backward.iterkeys():
+                    self.training_ngram_dict_backward[backward_key].append(backward_value)
                 else:
-                    self.ngram_dict_backward[backward_key] = [backward_value]
-                """
+                    self.training_ngram_dict_backward[backward_key] = [backward_value]
 
+    def load_topical_text(self, text):
+        
+        for line in text.split('\n'):
+        
+            for sentence in self.sentence_segmenter.tokenize(line):
+            
+                for ngram in self._sentence_to_ngrams(sentence):
+                
+                    # TODO: filter ugly ngrams, like those containing urls
+                
+                    forward_key = ngram[:-1]
+                    forward_value = ngram[-1]
+                    
+                    if forward_key in self.topical_ngram_dict_forward.iterkeys():
+                        self.topical_ngram_dict_forward[forward_key].append(forward_value)
+                    else:
+                        self.topical_ngram_dict_forward[forward_key] = [forward_value]
+                
+                
+                    backward_key = ngram[1:]
+                    backward_value = ngram[0]
+                
+                    if backward_key in self.topical_ngram_dict_backward.iterkeys():
+                        self.topical_ngram_dict_backward[backward_key].append(backward_value)
+                    else:
+                        self.topical_ngram_dict_backward[backward_key] = [backward_value]
+                        
+                
 
     def _sentence_to_ngrams(self, sentence):
         
-        words = nltk.word_tokenize(sentence)
-        words.append(self.sentence_terminator)
+        #words = nltk.word_tokenize(sentence)
+        words = sentence.split()
+        
+        words.insert(0, self.SENTENCE_BEGINNER)
+        words.append(self.SENTENCE_TERMINATOR)
         
         if len(words) < self.ngram_size:
             return
@@ -61,7 +96,7 @@ class MarkovGenerator(object):
         sentence = ''
         
         for word in list_of_words:
-            if word in self.dont_prepend_spaces:
+            if word in self.DONT_PREPEND_SPACE:
                 sentence += word
             else:
                 sentence += ' ' + word
@@ -70,23 +105,28 @@ class MarkovGenerator(object):
             
 
 
-    def generate_sentence(self):
+    def generate_sentence(self, seed):
     
-        # length ngram size - 1
-        
         #seed = ['I', 'think']
-        seed = ['I', 'think', 'that']
+        #seed = ['I', 'think', 'that']
         #seed = ['I', 'think', 'that', 'I']
+        
+        assert len(seed) == self.ngram_size
         
         gen_words = copy.copy(seed)
         current_ngram = copy.copy(seed)
         
+        
+        # generate in forward direction
         while True:
             
-            next_word = random.choice(self.ngram_dict_forward[tuple(current_ngram[1:])])
+            try:
+                next_word = random.choice(self.training_ngram_dict_forward[tuple(current_ngram[1:])])
+            except KeyError:
+                next_word = random.choice(self.topical_ngram_dict_forward[tuple(current_ngram[1:])])
             
-            if next_word == self.sentence_terminator:
-                return self._collapse_sentence(gen_words)
+            if next_word == self.SENTENCE_TERMINATOR:
+                break
             
             gen_words.append(next_word)
             
@@ -94,15 +134,41 @@ class MarkovGenerator(object):
             current_ngram.append(next_word)
             
 
+        # generate in backward direction
+        
+        current_ngram = gen_words[:self.ngram_size]
+        
+        while True:
+        
+            try:
+                next_word = random.choice(self.training_ngram_dict_backward[tuple(current_ngram[:-1])])
+            except KeyError:
+                next_word = random.choice(self.topical_ngram_dict_backward[tuple(current_ngram[:-1])])
+            
+            
+            if next_word == self.SENTENCE_BEGINNER:
+                break
+            
+            gen_words.insert(0, next_word)
+            
+            current_ngram = current_ngram[:-1]
+            current_ngram.insert(0, next_word)
+                
+                
+        return self._collapse_sentence(gen_words)
 
 
-markov = MarkovGenerator(ngram_size=3)
-markov.add_text(open('data/plato-apology.txt').read())
+
+markov = MarkovGenerator(ngram_size=2)
+
+markov.load_training_text(open('data/plato-apology.txt').read())
+markov.load_topical_text(open('data/irc_text.txt').read())
+
 
 while True:
-    print markov.generate_sentence()
+    #print markov.generate_sentence(['Markov', 'chains', 'are'])
+    print markov.generate_sentence(['Markov', 'chains'])
     pdb.set_trace()
-    
     
     
     
