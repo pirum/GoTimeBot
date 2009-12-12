@@ -1,9 +1,8 @@
 import re
 
-VERSE_SPLIT_REGEX = re.compile(r'\s*\d{1,2}:\d{1,2}\s*')
+VERSE_SPLIT_REGEX = re.compile(r'\d{1,2}:\d{1,2}')
 
 f = open('data/king_james_bible_raw.txt')
-
 
 for line in f.xreadlines():
 
@@ -21,6 +20,4 @@ for line in f.xreadlines():
             continue
             
         print line
-    
-    
 
