@@ -1,0 +1,97 @@
+testing
+how are you doing today socrates
+now that you have learned something, respond better
+you have a long way to go
+clearly
+he's working based off a markov chain, so he's going to be useless for a while
+he should be a bit less chatty now
+stfu
+how about now?
+much better
+one out of five messages he should respond to
+but he'll be listening to them all and learning
+he's taunting you
+and me
+wtf
+wonder where that's coming from
+there are explosions and other weird sounds coming from colloquy
+lol
+you should totally set up speech synthesis
+that way socrates can impress you 24 hours a day
+heh so he can give me random bits of wisdom as I work
+he hasn't done much to impress so far
+i think you offended him
+he didn't know the concept of offense until you just taught it to him
+just nobody mention global domination
+hm, he should always respond when talked to directly
+see, you did offend him
+that should be easy to do
+hahaha
+i'm not sure how your implementation works
+so normally, he should be responding with a probability of 0.2
+but would it be possible to make it randomly add _italics_ and *boldness* to words?
+yeah, but not based on any interesting fact about those words
+hrm
+lol, exceptions
+yeah, but in many cases that's all he'll be able to do
+well, no
+in many cases all he'll be able to do is parrot something he's seen, but I can stop it from being the last thing said
+if anything he should say "hrm..." or "interesting..."
+that's what she said
+awesome, now that gem is in the vocabulary
+haha
+how's it going?
+nice
+you first
+I could make it way better by doing part of speech tagging, but as long as we talk with decent grammar he should be able to fake it
+have you considered anal fisting?
+how about ass to mouth?
+lol
+you're welcome chris
+awesome
+speech synthesis
+so he can impress you with his thoughts about the previously mentioned topics all hours of the day
+I must admit, it'd be funny shit
+I kind of feel like I have to watch what I say, like there's a child in the room
+we'll have to talk about the implementation a little later
+there's way cooler ways of writing this, I'll probably do a better one over the break
+nice
+this is just a slightly modified version of this blog post: http://www.eflorenzano.com/blog/post/writing-markov-chain-irc-bot-twisted-and-python/
+thoughts?
+fascinating, thanks
+lol
+i'll be back later
+hey all
+did you see this bot yesterday?
+I did not
+hello 
+really simple and dumb, but kind of funny
+what is "this?"
+what is "this"?
+You really _are_ dumb
+he records everything we say, and with a 20% change (100% if you call him out by name) he'll use a markov model to generate text
+until he's heard enough, a lot of times he just parrots
+uhh
+ok
+*20% chance
+sucks monkey balls
+heh or not
+you suck monkey balls
+yeah bitch, that's what I thought
+wtf is your problem
+lol
+oh wow, I think it took him that long to think of a comeback
+you're a lame bot aren't you?
+haha
+I see little value in this
+it was just an amusing exercise
+wtf Visual Studio
+the debugger is claiming that 2 variables that are very definitely  in a local scope are not accessible
+woohoo
+just finished setting up jira
+man, we're setting up a means of managing a virtual cluster of socialcast appliances
+thanks 
+yes, the cooler is useless
+but one of my coworkers has latched on to the term "multi-server environment"
+personally i think 'cluster' is far more accurate
+/rant
