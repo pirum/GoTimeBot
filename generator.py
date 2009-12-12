@@ -1,5 +1,8 @@
 #!/usr/bin/env python
 
+# Copyright (C) 2009 Go-time team
+# For license information, see LICENSE.TXT
+
 import pdb
 import random
 import copy

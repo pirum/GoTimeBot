@@ -1,3 +1,6 @@
+# Copyright (C) 2009 Go-time team
+# For license information, see LICENSE.TXT
+
 from twisted.words.protocols import irc
 from twisted.internet import protocol
 from twisted.internet import reactor

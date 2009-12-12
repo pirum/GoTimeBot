@@ -1,3 +1,6 @@
+# Copyright (C) 2009 Go-time team
+# For license information, see LICENSE.TXT
+
 import re
 
 VERSE_SPLIT_REGEX = re.compile(r'\d{1,2}:\d{1,2}')
