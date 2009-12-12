@@ -96,3 +96,6 @@ but one of my coworkers has latched on to the term "multi-server environment"
 personally i think 'cluster' is far more accurate
 /rant
 Although, as I said, Markov chains are a crude way to simulate actual thought.
+satisfaction fully guaranteed
+pie is clearly superior to cake
+do you have a way to weave the corpora together other than failover

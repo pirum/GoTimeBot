@@ -102,8 +102,7 @@ class MarkovGenerator(object):
                 sentence += ' ' + word
                 
         return sentence[1:]
-            
-
+     
 
     def generate_sentence(self, seed):
     
@@ -162,12 +161,13 @@ class MarkovGenerator(object):
 
 markov = MarkovGenerator(ngram_size=3)
 
+markov.load_training_text(open('data/king_james_bible_cleaned_short.txt').read())
 markov.load_training_text(open('data/plato-apology.txt').read())
 markov.load_topical_text(open('data/irc_text.txt').read())
 
 
 while True:
-    print markov.generate_sentence(['Markov', 'chains', 'are'])
+    print markov.generate_sentence(['weave', 'the', 'corpora'])
     pdb.set_trace()
     
     
