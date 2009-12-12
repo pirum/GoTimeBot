@@ -104,22 +104,20 @@ class MarkovGenerator(object):
             else:
                 sentence += ' ' + word
                 
-        return sentence[1:]
+        return sentence.strip()
      
 
     def generate_sentence(self, seed):
-    
-        #seed = ['I', 'think']
-        #seed = ['I', 'think', 'that']
-        #seed = ['I', 'think', 'that', 'I']
         
         assert len(seed) == self.ngram_size
         
         gen_words = copy.copy(seed)
         current_ngram = copy.copy(seed)
         
+        # TODO: with a small probability, attempt to find the next word in the topical text first
         
         # generate in forward direction
+        
         while True:
             
             try:
@@ -141,8 +139,6 @@ class MarkovGenerator(object):
         current_ngram = gen_words[:self.ngram_size]
         
         while True:
-        
-            # TODO: with a small probability, attempt to find the next word in the topical text first
         
             try:
                 next_word = random.choice(self.training_ngram_dict_backward[tuple(current_ngram[:-1])])
