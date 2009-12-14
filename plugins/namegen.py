@@ -9,7 +9,25 @@ class NameGenPlugin(plugin.Plugin):
         self.nameGen = NameGen()
         
     def handleMessage(self, bot, triggerName, message):
-        message = ', '.join(self.nameGen.generate_list(length=10))
+        
+        args = message.split(' ')[1:]
+        
+        options = {}
+        
+        # Shit-tastic argument parsing
+        for arg in args:
+            try:
+                key, value = arg.split(':')
+                options[key] = int(value)
+            except Exception, e:
+                bot.say("couldn't parse %s because of %s" % (arg, str(e)))
+                
+        
+        try:
+            message = ', '.join(self.nameGen.generate_list(5, **options))
+        except Exception ,e:
+            bot.say("Couldn't execute command as specified because of exception %s" % str(e))
+            
         bot.say(message)
     
     
