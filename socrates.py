@@ -12,6 +12,7 @@ import os
 import re
 
 import plugins.echo
+import plugins.namegen
 
 markov = defaultdict(list)
 STOP_WORD = "\n"
@@ -53,6 +54,7 @@ class SocratesBot(irc.IRCClient):
     def __init__(self):
       self.pluginRegistry = PluginRegistry()
       plugins.echo.EchoPlugin(self.pluginRegistry)
+      plugins.namegen.NameGenPlugin(self.pluginRegistry)
       
     def _get_nickname(self):
         return self.factory.nickname
