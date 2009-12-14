@@ -1,7 +1,7 @@
-import socrates
+import plugin
 import re
 
-class EchoPlugin(socrates.Plugin):
+class EchoPlugin(plugin.Plugin):
   
   def __init__(self, pluginRegistry):
     pluginRegistry.registerTrigger('echo:message', re.compile('echo .*'), self)

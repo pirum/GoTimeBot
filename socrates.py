@@ -43,10 +43,6 @@ class PluginRegistry(object):
         trigger['plugin'].handleMessage(bot, name, message)
   
 
-class Plugin(object):
-  
-  def handleMessage(self, bot, triggerName, message):
-    pass
 
 
 class SocratesBot(irc.IRCClient):

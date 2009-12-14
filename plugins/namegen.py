@@ -1,9 +1,11 @@
-import socrates
+import plugin
+import re
+import random
 
-class NameGenPlugin(socrates.Plugin):
+class NameGenPlugin(plugin.Plugin):
     
     def __init__(self, pluginRegistry):
-        pluginRegistry.registerTrigger('NameGen:generate', '@namegen.*', self)
+        pluginRegistry.registerTrigger('NameGen:generate', re.compile('@namegen.*'), self)
         self.nameGen = NameGen()
         
     def handleMessage(self, bot, triggerName, message):
