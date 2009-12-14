@@ -11,11 +11,49 @@ import random
 import os
 import re
 
+import plugins.echo
+
 markov = defaultdict(list)
 STOP_WORD = "\n"
 
 
+class PluginRegistry(object):
+  '''
+  Maintains a list of plugins and triggers
+  '''
+  
+  def __init__(self):
+    self.registeredTriggers = {}
+
+  def registerTrigger(self, triggerName, pattern, plugin):
+    '''
+    Installs a trigger or IRC messages. Takes a trigger name, message pattern and a plugin sublcass
+    instance to pass messages off to.
+    '''
+    self.registeredTriggers[triggerName] = {'pattern': pattern, 'plugin': plugin}
+
+  def broadcastMessage(self, bot, message):
+    '''
+    Broadcasts a message to all registered subscribers.
+    '''
+    for name, trigger in self.registeredTriggers.iteritems():
+
+      if trigger['pattern'].match(message):
+        trigger['plugin'].handleMessage(bot, name, message)
+  
+
+class Plugin(object):
+  
+  def handleMessage(self, bot, triggerName, message):
+    pass
+
+
 class SocratesBot(irc.IRCClient):
+  
+    def __init__(self):
+      self.pluginRegistry = PluginRegistry()
+      plugins.echo.EchoPlugin(self.pluginRegistry)
+      
     def _get_nickname(self):
         return self.factory.nickname
     nickname = property(_get_nickname)
@@ -28,23 +66,28 @@ class SocratesBot(irc.IRCClient):
         print "Joined %s." % (channel,)
 
     def privmsg(self, user, channel, msg):
-        if not user:
-            return
-        if self.nickname in msg:
-            msg = re.compile(self.nickname + "[:,]* ?", re.I).sub('', msg)
-            prefix = "%s: " % (user.split('!', 1)[0], )
-        else:
-            prefix = ''
-            
-        begins_with_nick = msg.startswith(self.nickname)
-            
-        add_to_brain(msg, self.factory.chain_length, write_to_file=True)
-        if prefix or begins_with_nick or random.random() <= self.factory.chattiness:
-            sentence = generate_sentence(msg, self.factory.chain_length,
-                self.factory.max_words)
-            if sentence:
-                self.msg(self.factory.channel, prefix + sentence)
+      self.pluginRegistry.broadcastMessage(self, msg)
+      
+      # if not user:
+      #           return
+      #       if self.nickname in msg:
+      #           msg = re.compile(self.nickname + "[:,]* ?", re.I).sub('', msg)
+      #           prefix = "%s: " % (user.split('!', 1)[0], )
+      #       else:
+      #           prefix = ''
+      #           
+      #       begins_with_nick = msg.startswith(self.nickname)
+      #           
+      #       add_to_brain(msg, self.factory.chain_length, write_to_file=True)
+      #       if prefix or begins_with_nick or random.random() <= self.factory.chattiness:
+      #           sentence = generate_sentence(msg, self.factory.chain_length,
+      #               self.factory.max_words)
+      #           if sentence:
+      #               self.msg(self.factory.channel, prefix + sentence)
 
+
+    def say(self, message):
+        self.msg(self.factory.channel, message)
 
 
 class SocratesBotFactory(protocol.ClientFactory):
