@@ -1,6 +1,8 @@
 # Copyright (C) 2009 Go-time team
 # For license information, see LICENSE.TXT
 
+import daemon
+
 from twisted.words.protocols import irc
 from twisted.internet import protocol
 from twisted.internet import reactor
@@ -13,6 +15,8 @@ import re
 
 import plugins.echo
 import plugins.namegen
+
+import lockfile
 
 markov = defaultdict(list)
 STOP_WORD = "\n"
@@ -142,7 +146,10 @@ def generate_sentence(msg, chain_length, max_words=10000):
 
 
 
+
 if __name__ == "__main__":
+
+    
 
     chain_length = 2
 
@@ -158,7 +165,19 @@ if __name__ == "__main__":
             add_to_brain(line, chain_length)
         print 'Brain Reloaded'
         f.close()
-    reactor.connectTCP('irc.freenode.net', 6667, SocratesBotFactory('#' + chan,
-        'Socrates98432', chain_length, chattiness=0.2))
-    reactor.run()
+        
+    
+    nick = 'Socrates%s' % int(random.random() * 10000)
+    log = open('var/socrates.log', "w+")
+    
+    context = daemon.DaemonContext(working_directory=os.getcwd(), stdout=log, stderr=log)
+
+    with context:
+        pidFile = open('var/socrates.pid', "w+")
+        pidFile.write(str(os.getpid()))
+        pidFile.close()
+        
+        reactor.connectTCP('irc.freenode.net', 6667, SocratesBotFactory('#' + chan,
+            nick, chain_length, chattiness=0.2))
+        reactor.run()
 
