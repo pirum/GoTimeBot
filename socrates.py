@@ -1,7 +1,7 @@
 # Copyright (C) 2009 Go-time team
 # For license information, see LICENSE.TXT
 
-import daemon
+from twisted.application import internet, service
 
 from twisted.words.protocols import irc
 from twisted.internet import protocol
@@ -144,40 +144,19 @@ def generate_sentence(msg, chain_length, max_words=10000):
         buf.append(next_word)
     return ' '.join(message)
 
+chain_length = 2
 
+if os.path.exists('training_text.txt'):
+    f = open('training_text.txt', 'r')
+    for line in f:
+        add_to_brain(line, chain_length)
+    print 'Brain Reloaded'
+    f.close()
 
+nick = 'Socrates%s' % int(random.random() * 10000)
+log = open('var/socrates.log', "w+")
 
-if __name__ == "__main__":
-
-    
-
-    chain_length = 2
-
-    try:
-        chan = sys.argv[1]
-    except IndexError:
-        print "Please specify a channel name."
-        print "Example:"
-        print "  python socrates.py go-time"
-    if os.path.exists('training_text.txt'):
-        f = open('training_text.txt', 'r')
-        for line in f:
-            add_to_brain(line, chain_length)
-        print 'Brain Reloaded'
-        f.close()
-        
-    
-    nick = 'Socrates%s' % int(random.random() * 10000)
-    log = open('var/socrates.log', "w+")
-    
-    context = daemon.DaemonContext(working_directory=os.getcwd(), stdout=log, stderr=log)
-
-    with context:
-        pidFile = open('var/socrates.pid', "w+")
-        pidFile.write(str(os.getpid()))
-        pidFile.close()
-        
-        reactor.connectTCP('irc.freenode.net', 6667, SocratesBotFactory('#' + chan,
-            nick, chain_length, chattiness=0.2))
-        reactor.run()
-
+application = service.Application("socrates")
+service = internet.TCPClient('irc.freenode.net', 6667, SocratesBotFactory('#go-time',
+    nick, chain_length, chattiness=0.2))
+service.setServiceParent(application)
